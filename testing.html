@@ -12,7 +12,6 @@
             padding: 40px;
             background: linear-gradient(135deg, #ffffff, #4db8ff);
             color: #333;
-            overflow-x: hidden;
         }
         .container {
             max-width: 1000px;
@@ -21,8 +20,6 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            transform: translateY(0);
-            transition: transform 0.3s ease-out;
         }
         h1, h2, h3 {
             color: #0066cc;
@@ -35,7 +32,6 @@
             border-bottom: 3px solid #0066cc;
             padding-bottom: 15px;
             width: 100%;
-            animation: slideIn 1s ease-out;
         }
         h1 {
             font-size: 2.3em;
@@ -56,12 +52,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: rotateAndPulse 3s infinite;
-            transition: all 0.5s ease;
+            transition: transform 0.3s ease;
         }
         .title-image:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: scale(1.1);
         }
         h2 {
             font-size: 1.8em;
@@ -78,8 +72,6 @@
             background: #fff;
             border-radius: 8px;
             overflow: hidden;
-            transform: translateY(0);
-            transition: transform 0.3s ease-out;
         }
         th, td {
             border: 1px solid #e0e0e0;
@@ -106,28 +98,6 @@
         }
         .section {
             margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        .section:hover::before {
-            opacity: 1;
         }
         .pass {
             color: #28a745;
@@ -197,11 +167,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             animation: fadeIn 0.5s ease-in;
             margin-bottom: 20px;
-            transform: translateY(0);
-            transition: transform 0.3s ease-out;
-        }
-        .equivalence-classes:hover {
-            transform: translateY(-5px);
         }
         .equivalence-classes p {
             font-weight: 600;
@@ -231,7 +196,7 @@
             background: #e6f0ff;
         }
         .system-visualization {
-            background: linear-gradient(135deg, #f8fafc, #e6f0ff);
+            background: #f8fafc;
             padding: 20px;
             border-radius: 10px;
             border: 1px solid #0066cc;
@@ -239,19 +204,12 @@
             margin: 20px 0;
             position: relative;
             height: 200px;
-            transform: translateY(0);
-            transition: all 0.5s ease-out;
-            animation: glowPulse 2s infinite;
-        }
-        .system-visualization:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(0, 102, 204, 0.2);
         }
         .thermostat {
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f8fafc, #e6f0ff);
+            background: #f8fafc;
             border: 8px solid #0066cc;
             position: relative;
             margin: 0 auto;
@@ -261,13 +219,7 @@
             font-size: 2em;
             font-weight: bold;
             color: #333;
-            transition: all 0.5s ease;
-            animation: floatAndGlow 3s ease-in-out infinite;
-        }
-        .thermostat:hover {
-            transform: scale(1.1);
-            border-color: #ff6b6b;
-            box-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
         }
         .status {
             position: absolute;
@@ -286,6 +238,42 @@
             background: #74c0fc;
             color: white;
         }
+        .status-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .status-popup.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        .status-emoji {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: bounce 1s infinite;
+        }
+        .status-message {
+            font-size: 24px;
+            color: #333;
+            margin: 10px 0;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         footer {
             background: #0066cc;
             color: #fff;
@@ -296,68 +284,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-size: 1em;
             font-weight: 500;
-        }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        @keyframes rotateAndPulse {
-            0% {
-                transform: rotate(0deg) scale(1);
-            }
-            25% {
-                transform: rotate(5deg) scale(1.05);
-            }
-            50% {
-                transform: rotate(0deg) scale(1);
-            }
-            75% {
-                transform: rotate(-5deg) scale(1.05);
-            }
-            100% {
-                transform: rotate(0deg) scale(1);
-            }
-        }
-        @keyframes glowPulse {
-            0% {
-                box-shadow: 0 0 5px rgba(0, 102, 204, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 20px rgba(0, 102, 204, 0.4);
-            }
-            100% {
-                box-shadow: 0 0 5px rgba(0, 102, 204, 0.2);
-            }
-        }
-        @keyframes floatAndGlow {
-            0% {
-                transform: translateY(0px);
-                box-shadow: 0 0 10px rgba(0, 102, 204, 0.2);
-            }
-            50% {
-                transform: translateY(-15px);
-                box-shadow: 0 0 25px rgba(0, 102, 204, 0.4);
-            }
-            100% {
-                transform: translateY(0px);
-                box-shadow: 0 0 10px rgba(0, 102, 204, 0.2);
-            }
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         @media (max-width: 600px) {
             body {
@@ -400,6 +326,10 @@
     </style>
 </head>
 <body>
+    <div class="status-popup" id="statusPopup">
+        <div class="status-emoji" id="statusEmoji">🔥</div>
+        <div class="status-message" id="statusMessage">Heating is ON!</div>
+    </div>
     <div class="container">
         <div class="title-container">
             <h1>Temperature Control System Testing</h1>
@@ -539,27 +469,6 @@
         let heatingOn = false;
         let currentTemp = 20;
         
-        // Add scroll animation
-        function handleScroll() {
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-                const windowHeight = window.innerHeight;
-                if (sectionTop < windowHeight * 0.75) {
-                    section.classList.add('visible');
-                }
-            });
-        }
-
-        // Add scroll event listener
-        window.addEventListener('scroll', handleScroll);
-        
-        // Initial check for sections in view
-        document.addEventListener('DOMContentLoaded', function() {
-            updateThermostat(20);
-            handleScroll();
-        });
-        
         // Update the thermostat display
         function updateThermostat(temp) {
             const thermostat = document.getElementById('thermostat');
@@ -574,6 +483,11 @@
             } else {
                 // Between 18-21, maintain current state (hysteresis)
                 newHeatingStatus = heatingOn;
+            }
+            
+            // Show popup only if heating status changes
+            if (newHeatingStatus !== heatingOn) {
+                showStatusPopup(newHeatingStatus);
             }
             
             // Update the heating status display
@@ -591,6 +505,32 @@
             
             currentTemp = temp;
             return heatingOn ? "ON" : "OFF";
+        }
+        
+        // Show status popup with animation
+        function showStatusPopup(isHeatingOn) {
+            const popup = document.getElementById('statusPopup');
+            const emoji = document.getElementById('statusEmoji');
+            const message = document.getElementById('statusMessage');
+            
+            // Set appropriate emoji and message
+            if (isHeatingOn) {
+                emoji.textContent = '🔥';
+                message.textContent = 'Heating is ON!';
+                message.style.color = '#ff6b6b';
+            } else {
+                emoji.textContent = '❄️';
+                message.textContent = 'Heating is OFF!';
+                message.style.color = '#74c0fc';
+            }
+            
+            // Show popup
+            popup.classList.add('active');
+            
+            // Hide popup after 2 seconds
+            setTimeout(() => {
+                popup.classList.remove('active');
+            }, 2000);
         }
         
         // Test a temperature input
@@ -662,6 +602,11 @@
             // Reset to default state
             updateThermostat(20);
         }
+        
+        // Initialize the thermostat
+        document.addEventListener('DOMContentLoaded', function() {
+            updateThermostat(20);
+        });
     </script>
 </body>
 </html>
