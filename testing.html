@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Control System Testing</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #ffffff, #4db8ff);
+            color: #333;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease-out;
+        }
+        h1, h2, h3 {
+            color: #0066cc;
+        }
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 15px;
+            width: 100%;
+            animation: slideIn 1s ease-out;
+        }
+        h1 {
+            font-size: 2.3em;
+            margin: 0 20px 0 0;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .title-image {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotateAndPulse 3s infinite;
+            transition: all 0.5s ease;
+        }
+        .title-image:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 30px;
+        }
+        h3 {
+            font-size: 1.4em;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.3s ease-out;
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #0066cc;
+            color: #fff;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        tr:hover {
+            background: #e7f1f8;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .section {
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .section:hover::before {
+            opacity: 1;
+        }
+        .pass {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .fail {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .notes {
+            font-style: italic;
+            color: #555;
+        }
+        .input-form {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .input-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0066cc;
+        }
+        .input-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-form input:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 8px rgba(0, 102, 204, 0.3);
+            outline: none;
+        }
+        .input-form button {
+            background: #0066cc;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .input-form button:hover {
+            background: #004c99;
+            transform: translateY(-2px);
+        }
+        #result-table {
+            display: none;
+        }
+        #result-table.active {
+            display: table;
+        }
+        .equivalence-classes {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #0066cc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in;
+            margin-bottom: 20px;
+            transform: translateY(0);
+            transition: transform 0.3s ease-out;
+        }
+        .equivalence-classes:hover {
+            transform: translateY(-5px);
+        }
+        .equivalence-classes p {
+            font-weight: 600;
+            margin: 10px 0 5px;
+            color: #333;
+        }
+        .equivalence-classes ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .equivalence-classes ul li {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .equivalence-classes ul.valid li {
+            background: #e6f4ea;
+            color: #28a745;
+        }
+        .equivalence-classes ul.invalid li {
+            background: #f8e7e8;
+            color: #dc3545;
+        }
+        .equivalence-classes ul li:hover {
+            transform: translateX(5px);
+            background: #e6f0ff;
+        }
+        .system-visualization {
+            background: linear-gradient(135deg, #f8fafc, #e6f0ff);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #0066cc;
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            height: 200px;
+            transform: translateY(0);
+            transition: all 0.5s ease-out;
+            animation: glowPulse 2s infinite;
+        }
+        .system-visualization:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 102, 204, 0.2);
+        }
+        .thermostat {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f8fafc, #e6f0ff);
+            border: 8px solid #0066cc;
+            position: relative;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.5s ease;
+            animation: floatAndGlow 3s ease-in-out infinite;
+        }
+        .thermostat:hover {
+            transform: scale(1.1);
+            border-color: #ff6b6b;
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+        }
+        .status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .heating-on {
+            background: #ff6b6b;
+            color: white;
+        }
+        .heating-off {
+            background: #74c0fc;
+            color: white;
+        }
+        footer {
+            background: #0066cc;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 1em;
+            font-weight: 500;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes rotateAndPulse {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+            25% {
+                transform: rotate(5deg) scale(1.05);
+            }
+            50% {
+                transform: rotate(0deg) scale(1);
+            }
+            75% {
+                transform: rotate(-5deg) scale(1.05);
+            }
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+        }
+        @keyframes glowPulse {
+            0% {
+                box-shadow: 0 0 5px rgba(0, 102, 204, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(0, 102, 204, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(0, 102, 204, 0.2);
+            }
+        }
+        @keyframes floatAndGlow {
+            0% {
+                transform: translateY(0px);
+                box-shadow: 0 0 10px rgba(0, 102, 204, 0.2);
+            }
+            50% {
+                transform: translateY(-15px);
+                box-shadow: 0 0 25px rgba(0, 102, 204, 0.4);
+            }
+            100% {
+                transform: translateY(0px);
+                box-shadow: 0 0 10px rgba(0, 102, 204, 0.2);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+            .container {
+                padding: 15px;
+            }
+            .title-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            h1 {
+                font-size: 1.6em;
+                margin: 0 0 15px 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+            }
+            .title-image {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .input-form input, .input-form button {
+                font-size: 0.9em;
+            }
+            .equivalence-classes {
+                padding: 15px;
+            }
+            footer {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-container">
+            <h1>Temperature Control System Testing</h1>
+            <div class="title-image">
+                <img src="https://ecu.edu.eg/wp-content/uploads/2022/05/ECU-Logo.png" alt="ECU Logo" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Objective</h2>
+            <p>Apply black box testing techniques to a temperature control system, based on Chapter 4's examples.</p>
+        </div>
+
+        <div class="section">
+            <h2>Description</h2>
+            <p>The system switches heating on below 18 degrees and off at 21 degrees, with test cases designed using equivalence partitioning and boundary value analysis, as seen in Chapter 4's temperature control example.</p>
+        </div>
+
+        <div class="section">
+            <h2>System Simulation</h2>
+            <div class="system-visualization">
+                <div class="status heating-off" id="heating-status">Heating: OFF</div>
+                <div class="thermostat" id="thermostat">20</div>
+            </div>
+            <div class="input-form">
+                <label for="temperature">Enter Temperature (°C):</label>
+                <input type="number" id="temperature" placeholder="Enter temperature">
+                <button onclick="testTemperature()">Test</button>
+                <button onclick="clearResults()">Clear Results</button>
+            </div>
+            <table id="result-table">
+                <thead>
+                    <tr>
+                        <th>Temperature</th>
+                        <th>Expected Heating State</th>
+                        <th>Actual Heating State</th>
+                        <th>Pass/Fail</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="result-body"></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Tasks</h2>
+
+            <h3>1. Identify Equivalence Classes</h3>
+            <div class="equivalence-classes">
+                <p>Equivalence Classes for Temperature Inputs:</p>
+                <ul class="valid">
+                    <li><strong>Class 1</strong>: Temperatures below 18°C - Heating expected to be ON.</li>
+                    <li><strong>Class 2</strong>: Temperatures between 18°C and 20°C - Transitional state.</li>
+                    <li><strong>Class 3</strong>: Temperatures at or above 21°C - Heating expected to be OFF.</li>
+                </ul>
+            </div>
+
+            <h3>2. Design Test Cases Based on Boundary Values</h3>
+            <p>The following test cases were designed using boundary value analysis:</p>
+            <table>
+                <tr>
+                    <th>Test Case ID</th>
+                    <th>Temperature</th>
+                    <th>Expected Heating State</th>
+                    <th>Selection Rationale</th>
+                </tr>
+                <tr>
+                    <td>TC1</td>
+                    <td>17</td>
+                    <td>ON</td>
+                    <td>Boundary value just below 18 (one degree)</td>
+                </tr>
+                <tr>
+                    <td>TC2</td>
+                    <td>18</td>
+                    <td>OFF</td>
+                    <td>Boundary value exactly at 18</td>
+                </tr>
+                <tr>
+                    <td>TC3</td>
+                    <td>19</td>
+                    <td>OFF</td>
+                    <td>Middle value in Class 2</td>
+                </tr>
+                <tr>
+                    <td>TC4</td>
+                    <td>20</td>
+                    <td>OFF</td>
+                    <td>Boundary value just before 21 (one degree)</td>
+                </tr>
+                <tr>
+                    <td>TC5</td>
+                    <td>21</td>
+                    <td>OFF</td>
+                    <td>Boundary value exactly at 21</td>
+                </tr>
+                <tr>
+                    <td>TC6</td>
+                    <td>22</td>
+                    <td>OFF</td>
+                    <td>Boundary value just above 21 (one degree)</td>
+                </tr>
+            </table>
+
+            <h3>3. Execute Tests on the Provided Simulation</h3>
+            <p>Use the interactive simulation above to test the temperature control system with the defined test cases. The results will be displayed in the table and provide verification of system behavior.</p>
+            
+            <h3>4. Considerations</h3>
+            <p>This project focuses on functional testing as mentioned in Chapter 2 and can be extended to include regression testing after changes, reinforcing maintenance testing concepts. The simulation provides an easy way to test the temperature control system's behavior.</p>
+            
+            <p>Additional considerations for the system:</p>
+            <ul>
+                <li>The system exhibits hysteresis behavior: it switches heating off at 21°C and on below 18°C.</li>
+                <li>Between 18°C and 21°C, the system maintains its previous state (either ON or OFF).</li>
+                <li>The simulation enables quick execution of test cases with immediate feedback.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Test Results Analysis</h2>
+            <p>After executing the test cases, analyze the results to verify that:</p>
+            <ul>
+                <li>The heating turns ON for temperatures below 18°C (Class 1)</li>
+                <li>The heating turns OFF for temperatures at or above 21°C (Class 3)</li>
+                <li>For temperatures between 18°C and 21°C, the system maintains its previous state</li>
+            </ul>
+            <p>All test cases should pass, confirming that the temperature control system behaves as expected according to the requirements.</p>
+        </div>
+
+        <footer>
+            Temperature Control System Testing Project
+        </footer>
+    </div>
+
+    <script>
+        // Initialize the system state
+        let heatingOn = false;
+        let currentTemp = 20;
+        
+        // Add scroll animation
+        function handleScroll() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (sectionTop < windowHeight * 0.75) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        // Add scroll event listener
+        window.addEventListener('scroll', handleScroll);
+        
+        // Initial check for sections in view
+        document.addEventListener('DOMContentLoaded', function() {
+            updateThermostat(20);
+            handleScroll();
+        });
+        
+        // Update the thermostat display
+        function updateThermostat(temp) {
+            const thermostat = document.getElementById('thermostat');
+            thermostat.innerText = temp;
+            
+            // Update heating status based on temperature rules
+            let newHeatingStatus;
+            if (temp < 18) {
+                newHeatingStatus = true; // heating ON below 18
+            } else if (temp >= 21) {
+                newHeatingStatus = false; // heating OFF at or above 21
+            } else {
+                // Between 18-21, maintain current state (hysteresis)
+                newHeatingStatus = heatingOn;
+            }
+            
+            // Update the heating status display
+            heatingOn = newHeatingStatus;
+            const statusDiv = document.getElementById('heating-status');
+            if (heatingOn) {
+                statusDiv.innerText = "Heating: ON";
+                statusDiv.className = "status heating-on";
+                thermostat.style.borderColor = "#ff6b6b";
+            } else {
+                statusDiv.innerText = "Heating: OFF";
+                statusDiv.className = "status heating-off";
+                thermostat.style.borderColor = "#0066cc";
+            }
+            
+            currentTemp = temp;
+            return heatingOn ? "ON" : "OFF";
+        }
+        
+        // Test a temperature input
+        function testTemperature() {
+            const tempInput = document.getElementById('temperature');
+            const temp = parseFloat(tempInput.value);
+            
+            if (isNaN(temp)) {
+                alert("Please enter a valid temperature.");
+                return;
+            }
+            
+            // Determine expected heating state based on the rules
+            let expectedHeatingState;
+            if (temp < 18) {
+                expectedHeatingState = "ON";
+            } else if (temp >= 21) {
+                expectedHeatingState = "OFF";
+            } else {
+                // For the 18-21 range, it depends on the previous state
+                // But for testing purposes, we'll indicate the hysteresis behavior
+                expectedHeatingState = "Depends on previous state";
+            }
+            
+            // Get actual heating state by updating the thermostat
+            const actualHeatingState = updateThermostat(temp);
+            
+            // Determine pass/fail based on the expected vs actual
+            let passOrFail;
+            let notes = "";
+            
+            if (expectedHeatingState === "Depends on previous state") {
+                passOrFail = "Pass";
+                notes = `Hysteresis zone: maintains previous state (${actualHeatingState})`;
+            } else if (expectedHeatingState === actualHeatingState) {
+                passOrFail = "Pass";
+            } else {
+                passOrFail = "Fail";
+                notes = `Expected ${expectedHeatingState} but got ${actualHeatingState}`;
+            }
+            
+            // Add result to the table
+            const resultBody = document.getElementById('result-body');
+            const resultTable = document.getElementById('result-table');
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>${temp}°C</td>
+                <td>${expectedHeatingState}</td>
+                <td>${actualHeatingState}</td>
+                <td class="${passOrFail === 'Pass' ? 'pass' : 'fail'}">${passOrFail}</td>
+                <td class="notes">${notes}</td>
+            `;
+            
+            resultBody.appendChild(row);
+            resultTable.classList.add('active');
+            
+            // Clear input field
+            tempInput.value = '';
+        }
+        
+        // Clear all test results
+        function clearResults() {
+            const resultBody = document.getElementById('result-body');
+            const resultTable = document.getElementById('result-table');
+            resultBody.innerHTML = '';
+            resultTable.classList.remove('active');
+            
+            // Reset to default state
+            updateThermostat(20);
+        }
+    </script>
+</body>
+</html>
